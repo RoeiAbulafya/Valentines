@@ -3,19 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>To Ofir from Roei</title>
+    <title>To Ofir from Roei🦆</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
     
     <style>
         :root {
             --primary-pink: #ff85a2;
             --dark-pink: #ff4d94;
+            --theater-red: #a30000;
+            --theater-dark: #660000;
         }
 
         body {
             background-color: #ffe6f2;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
@@ -24,42 +25,73 @@
             overflow: hidden;
         }
 
+        /* קונטיינר הוילונות */
+        #curtain-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 100;
+            display: flex;
+            cursor: pointer;
+        }
+
+        .curtain-half {
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--theater-dark) 0%, var(--theater-red) 20%, var(--theater-dark) 40%, var(--theater-red) 60%, var(--theater-dark) 80%, var(--theater-red) 100%);
+            background-size: 20% 100%;
+            transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.5);
+        }
+
+        .left-curtain { border-right: 2px solid #550000; }
+        .right-curtain { border-left: 2px solid #550000; }
+
+        .curtain-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            text-align: center;
+            color: gold;
+            font-size: 2.2rem;
+            text-shadow: 2px 2px 5px black;
+            z-index: 101;
+            pointer-events: none;
+            transition: opacity 0.5s;
+        }
+
+        .open .left-curtain { transform: translateX(-100%); }
+        .open .right-curtain { transform: translateX(100%); }
+        .open .curtain-text { opacity: 0; }
+
+        /* תוכן האתר */
         .container {
             background-color: white;
             padding: 50px;
             border-radius: 40px;
             box-shadow: 0 15px 35px rgba(255, 133, 162, 0.2);
             border: 6px solid var(--primary-pink);
-            z-index: 10;
             text-align: center;
-            width: 90%;
-            max-width: 450px;
-            position: relative;
+            width: 85%;
+            max-width: 400px;
+            z-index: 10;
         }
 
-        h2 {
-            color: var(--primary-pink);
-            font-size: 1.5rem;
-            margin: 0;
-            font-weight: 400;
+        .duck-display {
+            font-size: 60px;
+            margin-bottom: 20px;
+            display: block;
         }
 
-        h1 {
-            color: var(--dark-pink);
-            font-size: 2.5rem;
-            margin: 10px 0 20px 0;
-        }
+        h2#personal-greeting { color: var(--primary-pink); margin: 0; font-weight: 400; }
+        h1 { color: var(--dark-pink); font-size: 2.5rem; margin: 10px 0 20px 0; }
 
-        .duck-container { font-size: 60px; }
-
-        .buttons {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            margin-top: 30px;
-            height: 60px;
-        }
-
+        .buttons { display: flex; gap: 20px; justify-content: center; height: 60px; }
+        
         button {
             padding: 12px 35px;
             font-size: 1.3rem;
@@ -68,46 +100,35 @@
             border-radius: 25px;
             font-weight: 600;
             font-family: 'Fredoka', sans-serif;
-            transition: transform 0.2s ease, background-color 0.3s;
+            transition: all 0.3s;
         }
 
-        .btn-yes {
-            background-color: var(--dark-pink);
-            color: white;
-        }
+        .btn-yes { background-color: var(--dark-pink); color: white; }
+        #no-btn { background-color: #ffb3c6; color: white; position: relative; }
 
-        #no-btn {
-            background-color: #ffb3c6;
-            color: white;
-            position: relative;
-        }
-
-        .heart {
-            position: fixed;
-            top: -20px;
-            z-index: 1;
-            pointer-events: none;
-            animation: fall linear forwards;
-        }
-
+        .heart { position: fixed; top: -20px; z-index: 15; pointer-events: none; animation: fall linear forwards; }
         @keyframes fall {
             0% { transform: translateY(0) rotate(0deg); }
             100% { transform: translateY(110vh) rotate(360deg); }
         }
-
-        #message {
-            display: none;
-            margin-top: 25px;
-            font-size: 2rem;
-            color: var(--dark-pink);
-            font-weight: 600;
-        }
+        
+        #message { display: none; margin-top: 25px; font-size: 2rem; color: var(--dark-pink); font-weight: 600; }
     </style>
 </head>
 <body>
 
+    <div id="curtain-wrapper" onclick="openTheater()">
+        <div class="curtain-text">
+            <h2>I have a question for you...</h2>
+            <p style="font-size: 1.2rem; color: white;">(Tap to reveal)</p>
+        </div>
+        <div class="curtain-half left-curtain"></div>
+        <div class="curtain-half right-curtain"></div>
+    </div>
+
     <div class="container">
-        <div class="duck-container">🦆🌸🦆</div>
+        <div class="duck-display">🦆🌸🦆</div>
+        
         <h2 id="personal-greeting">Dear Ofir,</h2>
         <h1 id="main-title">Will you be my valentine?</h1>
         
@@ -116,91 +137,81 @@
             <button id="no-btn" onmouseover="moveButton(event)" ontouchstart="moveButton(event)">No</button>
         </div>
 
-        <div id="message">YAY! I LOVE YOU!💖🐥🎉</div>
+        <div id="message">YAY! I LOVE YOU💖💖💖</div>
     </div>
 
     <script>
-    let heartInterval;
-    let isCelebrating = false;
+        let heartInterval;
+        let isCelebrating = false;
 
-    function moveButton(event) {
-        // מונע מהדפדפן לבצע "לחיצה" אמיתית אם זה מגע בטלפון
-        if (event.type === 'touchstart') {
-            event.preventDefault();
+        function openTheater() {
+            const wrapper = document.getElementById('curtain-wrapper');
+            wrapper.classList.add('open');
+            setTimeout(() => { wrapper.style.display = 'none'; }, 1550);
         }
 
-        const btn = document.getElementById('no-btn');
-        
-        // חישוב גבולות המסך
-        const padding = 20;
-        const maxX = window.innerWidth - btn.offsetWidth - padding;
-        const maxY = window.innerHeight - btn.offsetHeight - padding;
-        
-        const randomX = Math.max(padding, Math.floor(Math.random() * maxX));
-        const randomY = Math.max(padding, Math.floor(Math.random() * maxY));
-        
-        btn.style.position = 'fixed';
-        btn.style.left = randomX + 'px';
-        btn.style.top = randomY + 'px';
-        
-        // הוספת אפקט קטן של רעידה כשהוא בורח
-        btn.style.transform = `scale(${Math.random() * 0.4 + 0.8})`;
-    }
-
-    function createHeart() {
-        const heart = document.createElement('div');
-        heart.classList.add('heart');
-        const types = ['❤️', '💖', '💝', '💕', '🐥'];
-        heart.innerHTML = types[Math.floor(Math.random() * types.length)];
-        heart.style.left = Math.random() * 100 + "vw";
-        const duration = Math.random() * 3 + 2;
-        heart.style.animationDuration = duration + "s";
-        heart.style.fontSize = Math.random() * 20 + 20 + "px";
-        document.body.appendChild(heart);
-        setTimeout(() => { heart.remove(); }, duration * 1000);
-    }
-
-    function handleYesClick() {
-        if (!isCelebrating) {
-            celebrate();
-        } else {
-            resetPage();
+        function moveButton(event) {
+            if (event.type === 'touchstart') event.preventDefault();
+            const btn = document.getElementById('no-btn');
+            const padding = 60;
+            const maxX = window.innerWidth - btn.offsetWidth - padding;
+            const maxY = window.innerHeight - btn.offsetHeight - padding;
+            
+            btn.style.position = 'fixed';
+            btn.style.left = Math.max(padding, Math.floor(Math.random() * maxX)) + 'px';
+            btn.style.top = Math.max(padding, Math.floor(Math.random() * maxY)) + 'px';
+            btn.style.zIndex = "1000";
         }
-    }
 
-    function celebrate() {
-        isCelebrating = true;
-        document.getElementById('message').style.display = 'block';
-        document.getElementById('no-btn').style.display = 'none';
-        document.getElementById('main-title').innerText = "Happy Valentine's!";
-        document.getElementById('personal-greeting').style.display = 'none';
-        
-        const yesBtn = document.getElementById('yes-btn');
-        yesBtn.innerText = "Again!";
-        yesBtn.style.backgroundColor = "#ffb3c6";
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            const types = ['❤️', '💖', '💝', '💕','🌸','🦆'];
+            heart.innerHTML = types[Math.floor(Math.random() * types.length)];
+            heart.style.left = Math.random() * 100 + "vw";
+            const duration = Math.random() * 3 + 2;
+            heart.style.animationDuration = duration + "s";
+            heart.style.fontSize = Math.random() * 20 + 20 + "px";
+            document.body.appendChild(heart);
+            setTimeout(() => { heart.remove(); }, duration * 1000);
+        }
 
-        heartInterval = setInterval(createHeart, 150);
-    }
+        function handleYesClick() {
+            if (!isCelebrating) celebrate();
+            else resetPage();
+        }
 
-    function resetPage() {
-        isCelebrating = false;
-        clearInterval(heartInterval);
-        
-        document.getElementById('message').style.display = 'none';
-        document.getElementById('personal-greeting').style.display = 'block';
-        document.getElementById('main-title').innerText = "Will you be my valentine?";
-        
-        const yesBtn = document.getElementById('yes-btn');
-        yesBtn.innerText = "Yes";
-        yesBtn.style.backgroundColor = ""; 
+        function celebrate() {
+            isCelebrating = true;
+            document.getElementById('message').style.display = 'block';
+            document.getElementById('no-btn').style.display = 'none';
+            document.getElementById('main-title').innerText = "It's a date!";
+            document.getElementById('personal-greeting').style.display = 'none';
+            
+            const yesBtn = document.getElementById('yes-btn');
+            yesBtn.innerText = "Again!";
+            yesBtn.style.backgroundColor = "#ffb3c6";
+            
+            heartInterval = setInterval(createHeart, 150);
+        }
 
-        const noBtn = document.getElementById('no-btn');
-        noBtn.style.display = 'inline-block';
-        noBtn.style.position = 'relative';
-        noBtn.style.left = '0';
-        noBtn.style.top = '0';
-        noBtn.style.transform = 'scale(1)';
-    }
-</script>
+        function resetPage() {
+            isCelebrating = false;
+            clearInterval(heartInterval);
+            document.getElementById('message').style.display = 'none';
+            document.getElementById('personal-greeting').style.display = 'block';
+            document.getElementById('main-title').innerText = "Will you be my valentine?";
+            
+            const yesBtn = document.getElementById('yes-btn');
+            yesBtn.innerText = "Yes";
+            yesBtn.style.backgroundColor = ""; 
+
+            const noBtn = document.getElementById('no-btn');
+            noBtn.style.display = 'inline-block';
+            noBtn.style.position = 'relative';
+            noBtn.style.left = '0';
+            noBtn.style.top = '0';
+        }
+    </script>
 </body>
 </html>
