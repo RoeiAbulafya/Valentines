@@ -113,83 +113,94 @@
         
         <div class="buttons">
             <button id="yes-btn" class="btn-yes" onclick="handleYesClick()">Yes</button>
-            <button id="no-btn" onmouseover="moveButton()" onclick="moveButton()">No</button>
+            <button id="no-btn" onmouseover="moveButton(event)" ontouchstart="moveButton(event)">No</button>
         </div>
 
         <div id="message">YAY! I LOVE YOU!💖🐥🎉</div>
     </div>
 
     <script>
-        let heartInterval;
-        let isCelebrating = false;
+    let heartInterval;
+    let isCelebrating = false;
 
-        function moveButton() {
-            const btn = document.getElementById('no-btn');
-            const maxX = window.innerWidth - btn.offsetWidth;
-            const maxY = window.innerHeight - btn.offsetHeight;
-            
-            btn.style.position = 'fixed';
-            btn.style.left = Math.floor(Math.random() * maxX) + 'px';
-            btn.style.top = Math.floor(Math.random() * maxY) + 'px';
+    function moveButton(event) {
+        // מונע מהדפדפן לבצע "לחיצה" אמיתית אם זה מגע בטלפון
+        if (event.type === 'touchstart') {
+            event.preventDefault();
         }
 
-        function createHeart() {
-            const heart = document.createElement('div');
-            heart.classList.add('heart');
-            const types = ['❤️', '💖', '💝', '💕', '🐥'];
-            heart.innerHTML = types[Math.floor(Math.random() * types.length)];
-            heart.style.left = Math.random() * 100 + "vw";
-            const duration = Math.random() * 3 + 2;
-            heart.style.animationDuration = duration + "s";
-            heart.style.fontSize = Math.random() * 20 + 20 + "px";
-            document.body.appendChild(heart);
-            setTimeout(() => { heart.remove(); }, duration * 1000);
+        const btn = document.getElementById('no-btn');
+        
+        // חישוב גבולות המסך
+        const padding = 20;
+        const maxX = window.innerWidth - btn.offsetWidth - padding;
+        const maxY = window.innerHeight - btn.offsetHeight - padding;
+        
+        const randomX = Math.max(padding, Math.floor(Math.random() * maxX));
+        const randomY = Math.max(padding, Math.floor(Math.random() * maxY));
+        
+        btn.style.position = 'fixed';
+        btn.style.left = randomX + 'px';
+        btn.style.top = randomY + 'px';
+        
+        // הוספת אפקט קטן של רעידה כשהוא בורח
+        btn.style.transform = `scale(${Math.random() * 0.4 + 0.8})`;
+    }
+
+    function createHeart() {
+        const heart = document.createElement('div');
+        heart.classList.add('heart');
+        const types = ['❤️', '💖', '💝', '💕', '🐥'];
+        heart.innerHTML = types[Math.floor(Math.random() * types.length)];
+        heart.style.left = Math.random() * 100 + "vw";
+        const duration = Math.random() * 3 + 2;
+        heart.style.animationDuration = duration + "s";
+        heart.style.fontSize = Math.random() * 20 + 20 + "px";
+        document.body.appendChild(heart);
+        setTimeout(() => { heart.remove(); }, duration * 1000);
+    }
+
+    function handleYesClick() {
+        if (!isCelebrating) {
+            celebrate();
+        } else {
+            resetPage();
         }
+    }
 
-        function handleYesClick() {
-            if (!isCelebrating) {
-                celebrate();
-            } else {
-                resetPage();
-            }
-        }
+    function celebrate() {
+        isCelebrating = true;
+        document.getElementById('message').style.display = 'block';
+        document.getElementById('no-btn').style.display = 'none';
+        document.getElementById('main-title').innerText = "Happy Valentine's!";
+        document.getElementById('personal-greeting').style.display = 'none';
+        
+        const yesBtn = document.getElementById('yes-btn');
+        yesBtn.innerText = "Again!";
+        yesBtn.style.backgroundColor = "#ffb3c6";
 
-        function celebrate() {
-            isCelebrating = true;
-            document.getElementById('message').style.display = 'block';
-            document.getElementById('no-btn').style.display = 'none';
-            document.getElementById('main-title').innerText = "Happy Valentine's!";
-            
-            // הסתרת ההקדשה האישית בזמן החגיגה
-            document.getElementById('personal-greeting').style.display = 'none';
-            
-            const yesBtn = document.getElementById('yes-btn');
-            yesBtn.innerText = "Again!";
-            yesBtn.style.backgroundColor = "#ffb3c6"; // ורוד בהיר יותר ל-"שוב"
+        heartInterval = setInterval(createHeart, 150);
+    }
 
-            heartInterval = setInterval(createHeart, 150);
-        }
+    function resetPage() {
+        isCelebrating = false;
+        clearInterval(heartInterval);
+        
+        document.getElementById('message').style.display = 'none';
+        document.getElementById('personal-greeting').style.display = 'block';
+        document.getElementById('main-title').innerText = "Will you be my valentine?";
+        
+        const yesBtn = document.getElementById('yes-btn');
+        yesBtn.innerText = "Yes";
+        yesBtn.style.backgroundColor = ""; 
 
-        function resetPage() {
-            isCelebrating = false;
-            clearInterval(heartInterval);
-            
-            // החזרת האלמנטים למצבם המקורי
-            document.getElementById('message').style.display = 'none';
-            document.getElementById('personal-greeting').style.display = 'block';
-            document.getElementById('main-title').innerText = "Will you be my valentine?";
-            
-            const yesBtn = document.getElementById('yes-btn');
-            yesBtn.innerText = "Yes";
-            yesBtn.style.backgroundColor = ""; 
-
-            const noBtn = document.getElementById('no-btn');
-            noBtn.style.display = 'inline-block';
-            noBtn.style.position = 'relative';
-            noBtn.style.left = '0';
-            noBtn.style.top = '0';
-        }
-    </script>
-
+        const noBtn = document.getElementById('no-btn');
+        noBtn.style.display = 'inline-block';
+        noBtn.style.position = 'relative';
+        noBtn.style.left = '0';
+        noBtn.style.top = '0';
+        noBtn.style.transform = 'scale(1)';
+    }
+</script>
 </body>
 </html>
